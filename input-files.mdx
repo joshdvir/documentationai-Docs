@@ -1,4 +1,45 @@
 ---
 title: Input Files
 ---
+Input files are a fundamental concept within the system, representing the data that  Commands, act upon. These are treated as `File` objects within the Fetchmedia system and have a well-defined lifecycle and interaction methods.
+
+## Lifecycle and Management of Input Files
+
+Input files, as `File` objects, offer comprehensive management capabilities:
+
+- **Direct Uploads**: Files can be directly uploaded to the system via dedicated [**File endpoints**](/post-files). This allows for immediate ingestion of data into the Fetchmedia ecosystem.
+
+- [**Downloads**](/get-files-id-filename): Once uploaded, these files can be securely downloaded using their respective File endpoints, facilitating data retrieval and verification.
+
+- [**Status Monitoring**](/get-files-id): The status of any input file can be retrieved through its File endpoint. This is crucial for tracking processing progress or ensuring availability.
+
+- **Permanent Storage**: By default, uploaded files are stored permanently within the system, ensuring data persistence. They will remain accessible until explicitly deleted by the user.
+
+## Creating Input Files via the [Command Create Endpoint](/post-commands)
+
+Beyond direct uploads, input files can also be seamlessly integrated when creating a new Command. The `POST /v1/commands` endpoint allows you to specify input files using various URL formats, which the system then processes to create corresponding `File` objects.
+
+In the following `POST /v1/commands` `payload` example:
+
+- `"in_1"`: Represents an input file sourced from a social media link (e.g., YouTube). The system will fetch and store this content as a new `File` object.
+
+- `"in_2"`: Represents an input file from a public direct link (e.g., an MP4 hosted on a web server). This content will also be fetched and stored as a new `File` object.
+
+- `"in_3"`: Represents an existing input file within Fetchmedia, identified by its `fm_id`. This allows you to reuse previously uploaded or processed files directly. The format for referencing an existing file is `fm_id://<uuid>`.
+
+```json
+{
+  "input_files": {
+    "in_1": "https://www.youtube.com/watch?v=YQRLHhrDhCg",
+    "in_2": "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4",
+    "in_3": "fm_id://c90798bd-b737-44ef-b341-ecd3c0afbe0f"
+  },
+  "output_files": {
+    "out_1": "output.mp4"
+  },
+  "ffmpeg_commands": [
+    "-i in_1 -i in_2 -filter_complex [0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[v][a] -map [v] -map [a] out_1"
+  ]
+}
+```
 
