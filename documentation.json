@@ -33,11 +33,6 @@
                 "title": "Examples",
                 "path": "examples",
                 "icon": "activity-square"
-              },
-              {
-                "title": "FAQ's",
-                "path": "help-center/faq",
-                "icon": "message-circle-question-mark"
               }
             ]
           },
@@ -89,13 +84,27 @@
             "icon": "bot"
           },
           {
-            "group": "Advanced",
-            "icon": "tool",
+            "group": "Support",
             "pages": [
+              {
+                "title": "Get Support",
+                "path": "get-support",
+                "icon": "hand-helping"
+              },
+              {
+                "title": "Errors",
+                "path": "errors",
+                "icon": "alert-triangle"
+              },
               {
                 "title": "Troubleshooting",
                 "path": "troubleshooting",
                 "icon": "alert-circle"
+              },
+              {
+                "title": "FAQ's",
+                "path": "help-center/faq",
+                "icon": "message-circle-question-mark"
               }
             ]
           }
