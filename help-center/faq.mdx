@@ -16,13 +16,13 @@ No. FetchMedia is designed for publicly accessible content and follows platform 
 
 ### How do Fetcher and FFmpeg work together?
 
-Fetcher grabs the video from social platforms using URLs, and FFmpeg processes that video in the cloud. Many workflows use Fetcher first and then run FFmpeg steps immediately after.
+Fetcher retrieves the video from social platforms using URLs, and FFmpeg processes it. Many workflows use Fetcher first and then run FFmpeg steps immediately after.
 
-### What does "direct social URL processing" mean?
+### What does 'direct social URL processing' mean?
 
-You can send a social media video URL and let FetchMedia handle the heavy lifting. FetchMedia handles the actual fetching behind the scenes, so your flows can stay simple: social URL in, processed video out.
+You can send a social media URL and let FetchMedia handle the heavy lifting. FetchMedia handles the actual fetching behind the scenes, so your flows can stay simple: social URL in, processed video out.
 
-### What are 2‑pass and 3‑pass encodings and when should I use them?
+### What are 2‑pass and 3‑pass encodings, and when should I use them?
 
 Multi‑pass encodings let FFmpeg analyze the video and then encode it with smarter bitrate allocation. That gives you more consistent visual quality at a given file size, which is useful for longer videos, ads, or important exports.
 
@@ -40,12 +40,16 @@ Yes. You can change or cancel your plan from your account settings. You keep you
 
 ### What happens to unused minutes if I downgrade?
 
-If you move to a smaller plan, your existing minutes stay available until the current cycle ends. After that, your new plan limits apply and any leftover minutes from the old plan expire.
+If you move to a smaller plan, your existing minutes stay available until the current cycle ends. After that, your new plan limits apply, and any leftover minutes from the old plan expire.
 
 ### How exactly are minutes counted?
 
 Every time FetchMedia handles a video - whether fetching or processing - we count the actual duration of the media in seconds against your balance. If you reach your included minutes, you can add a top‑up, upgrade, or wait for the next reset.
 
-### Does FetchMedia store my videos or history?
+### Does FetchMedia store my fetched videos?
 
-No. Files stream through to you. Apart from minimal logs needed to keep the service reliable, FetchMedia does not store your fetched or processed videos long term.
+No. Fetcher files stream through to you. Apart from minimal logs needed to keep the service reliable, FetchMedia does not store your fetched videos long-term.
+
+### Does FetchMedia store my Files / ffmpeg media output files?
+
+Yes. FFmpeg output files persist indefinitely; to remove them, you must use our deletion endpoints.
