@@ -31,19 +31,19 @@ FetchMedia streamlines your video workflows with powerful capabilities.
 
 FetchMedia handles videos from major social sources. Use the same API call structure across platforms.
 
-<Tabs>
-  <Tab title="TikTok & Instagram" icon="smartphone">
-    Fetch short-form videos and Reels with metadata like captions and likes.
-  </Tab>
+- Facebook
 
-  <Tab title="YouTube & Facebook" icon="play-circle">
-    Download clips, stories, and full videos, including private shares via direct links.
-  </Tab>
+- Instegram
 
-  <Tab title="X & LinkedIn" icon="twitter">
-    Pull tweets with videos and professional posts for repurposing.
-  </Tab>
-</Tabs>
+- Youtube
+
+- TikTok
+
+- Linkedin
+
+- X / Twitter
+
+- And more...
 
 <Callout kind="info" collapsed="false">
   All platforms use the `https://api.fetchmedia.io/v1/fetch` endpoint. Provide a video URL and optional FFmpeg commands.
@@ -61,12 +61,14 @@ Get started in minutes.
   <Step title="Fetch a Video" icon="download" title-type="p">
     Use this example to fetch and process a TikTok video.
 
-    <CodeGroup show-lines="true" tabs={[]}>
+    <CodeGroup default-tab="1" show-lines="true" tabs={[]}>
       ```javascript
+
+
       const response = await fetch('https://api.fetchmedia.io/v1/fetch', {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer YOUR_API_KEY',
+          'X-API-KEY': 'YOUR_API_KEY',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -74,16 +76,15 @@ Get started in minutes.
         })
       });
       const data = await response.json();
-      console.log(data.downloadUrl);
+      console.log(data.fetch_id);
       ```
 
       ```bash
       curl -X POST https://api.fetchmedia.io/v1/fetch \
-        -H "Authorization: Bearer YOUR_API_KEY" \
+        -H "X-API-KEY: YOUR_API_KEY" \
         -H "Content-Type: application/json" \
         -d '{
-          "url": "https://www.tiktok.com/@user/video/123456789",
-          "ffmpeg": "-vf \"scale=1280:720\""
+          "url": "https://www.tiktok.com/@user/video/123456789"
         }'
       ```
 
@@ -93,21 +94,20 @@ Get started in minutes.
       response = requests.post(
           'https://api.fetchmedia.io/v1/fetch',
           headers={
-              'Authorization': 'Bearer YOUR_API_KEY',
+              'X-API-KEY': 'YOUR_API_KEY',
               'Content-Type': 'application/json'
           },
           json={
-              'url': 'https://www.tiktok.com/@user/video/123456789',
-              'ffmpeg': '-vf "scale=1280:720"'
+              'url': 'https://www.tiktok.com/@user/video/123456789'
           }
       )
-      print(response.json()['downloadUrl'])
+      print(response.json()['fetch_id'])
       ```
     </CodeGroup>
   </Step>
 
   <Step title="Download Processed Video" icon="save" title-type="p">
-    Access the `downloadUrl` from the response to retrieve your edited video.
+    Access the `fetch_id` from the response to retrieve your edited video.
   </Step>
 </Steps>
 
