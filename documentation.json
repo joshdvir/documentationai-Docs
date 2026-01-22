@@ -46,7 +46,7 @@
                 "icon": "key"
               },
               {
-                "title": "Commands",
+                "title": "FFmpeg Commands",
                 "path": "commands",
                 "icon": "command"
               },
