@@ -30,6 +30,11 @@
                 "icon": "zap"
               },
               {
+                "title": "Examples",
+                "path": "examples",
+                "icon": "activity-square"
+              },
+              {
                 "title": "FAQ's",
                 "path": "help-center/faq",
                 "icon": "message-circle-question-mark"
@@ -44,8 +49,44 @@
                 "title": "Authentication",
                 "path": "authentication",
                 "icon": "key"
+              },
+              {
+                "title": "Commands",
+                "path": "commands",
+                "icon": "command"
+              },
+              {
+                "title": "Input Files",
+                "path": "input-files",
+                "icon": "file-check-icon"
+              },
+              {
+                "title": "Output Files",
+                "path": "output-files",
+                "icon": "file-down"
+              },
+              {
+                "title": "Webhooks",
+                "path": "webhooks",
+                "icon": "webhook-icon"
               }
             ]
+          },
+          {
+            "group": "Automation Templates",
+            "pages": [
+              {
+                "group": "n8n",
+                "pages": [],
+                "icon": "bot-message-square-icon"
+              },
+              {
+                "group": "Make",
+                "pages": [],
+                "icon": "bot-message-square"
+              }
+            ],
+            "icon": "bot"
           },
           {
             "group": "Advanced",
