@@ -4,6 +4,43 @@ description: >-
   Core concepts, file naming conventions, authentication, and high-level API
   overview.
 ---
+
+## Authentication
+
+All FetchMedia APIs use **API key authentication**.
+
+You must include your API key in every request using the following header:
+
+```
+--header X-API-KEY: your_api_key_here
+```
+
+Requests without a valid API key are rejected.
+Authentication is required for all endpoints across Fetch, Files, and Commands.
+
+---
+
+## API Modules Overview
+
+### [Fetch API](/api-introduction/fetch/overview)
+
+The Fetch API pulls media from supported public URLs into FetchMedia asynchronously. It is used to ingest external content and, optionally, to inspect metadata before download.
+
+---
+
+### [Files API](/api-introduction/files/overview)
+
+The Files API manages uploaded and imported media assets.
+It handles ingestion, probing (ffprobe), secure downloads, and lifecycle management.
+
+---
+
+### [Commands API](/api-introduction/commands/overview)
+
+The Commands API executes FFmpeg-based media processing jobs.
+It transforms input files into output files using templated, alias-driven commands.
+
+---
 ## File Naming and Aliasing
 
 ### Clean Commands, Predictable Execution
@@ -59,39 +96,3 @@ Output aliases are resolved using the `output_files` object and define the filen
 
 This approach allows multiple outputs, predictable naming, and easy chaining of commands.
 
----
-
-## Authentication
-
-All FetchMedia APIs use **API key authentication**.
-
-You must include your API key in every request using the following header:
-
-```
---header X-API-KEY: your_api_key_here
-```
-
-Requests without a valid API key are rejected.
-Authentication is required for all endpoints across Fetch, Files, and Commands.
-
----
-
-## API Modules Overview
-
-### [Fetch API](/api-introduction/fetch/overview)
-
-The Fetch API pulls media from supported public URLs into FetchMedia asynchronously. It is used to ingest external content and, optionally, to inspect metadata before download.
-
----
-
-### [Files API](/api-introduction/files/overview)
-
-The Files API manages uploaded and imported media assets.
-It handles ingestion, probing (ffprobe), secure downloads, and lifecycle management.
-
----
-
-### [Commands API](/api-introduction/commands/overview)
-
-The Commands API executes FFmpeg-based media processing jobs.
-It transforms input files into output files using templated, alias-driven commands.
