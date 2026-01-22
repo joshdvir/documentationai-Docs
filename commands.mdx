@@ -1,4 +1,30 @@
 ---
 title: Commands
 ---
+The Commands is a powerful feature that allows you to execute `ffmpeg` commands on files. This guide provides a comprehensive overview of the Commands what options they offer and how to work with them.
 
+## The Command
+
+The `Command` represents a command to be executed, including its status, parameters, and associated input and output files.
+
+## Running FFmpeg commands
+
+## Command Execution Modes
+
+You can configure FetchMedia to execute a single `ffmpeg` command or a sequence of multiple commands.
+
+- [**Single Command**](/post-commands#body-ffmpeg_command)**:** FetchMedia executes the command, saves the output, and makes the resulting files available for download via the command endpoint.
+
+- [**Multiple Commands**](/post-commands#body-ffmpeg_commands)**:** FetchMedia executes the commands sequentially in the order provided. The results are saved to the output files, which can then be downloaded via the command endpoint. You can also pass a single command in this field.
+
+### Advanced Workflows: Multi-Pass Encoding
+
+Sending multiple commands enables advanced techniques like **2-pass** and **3-pass encoding**. These methods analyze video data in stages to achieve the highest possible quality for a specific file size or bitrate. While this takes longer than single-pass encoding, it ensures optimal bitrate allocation.
+
+- **2-Pass:** The industry standard for achieving precise file size targets.
+
+- **3-Pass:** Adds an initial CRF (Constant Rate Factor) analysis to determine the ideal average bitrate before the standard 2-pass encode. This method is used by services like Netflix to ensure top-tier quality.
+
+## Input and Output Files
+
+Input and output files for commands are handled by the [**File**](/api-introduction/files/overview) endpoints. When you create a command, you provide the input files as URLs or `fm_id`s. The output files are specified by their desired names. When the command is executed, the output files are created as `Files` and can be accessed through the `Get File` endpoints using their `id`.
