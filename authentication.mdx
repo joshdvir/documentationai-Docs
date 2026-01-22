@@ -1,82 +1,88 @@
 ---
 title: Authentication and API Keys
-description: Learn how to securely authenticate with the FetchMedia API using API keys and handle permissions for accessing video fetching and processing endpoints.
+description: >-
+  Learn how to securely authenticate with the FetchMedia API using API keys for
+  file upload, fetching, and processing endpoints.
 ---
-
 ## Overview
 
-FetchMedia uses simple API key authentication to secure access to video fetching and processing endpoints. You generate an API key from your dashboard and include it in the `Authorization` header of every request. This method grants permissions for actions like downloading TikTok videos, editing with FFmpeg, or repurposing Instagram Reels.
+FetchMedia uses API key authentication to secure access to video fetching and processing endpoints. You generate an API key from your dashboard and include it in the `X-API-KEY` header of every request. This method grants permissions for actions like fetching TikTok videos, editing with FFmpeg, or repurposing Instagram Reels.
 
-All requests to `https://api.example.com` require a valid key. Keys have built-in rate limits and expiration to protect your account.
+All requests to `https://api.fetchmedia.io/v1/` require a valid key. Keys have built-in rate limits to protect your account.
 
-<Callout kind="info">
-  New accounts include one free API key with generous trial limits. Upgrade for production use.
+<Callout kind="info" collapsed="false">
+  New accounts include generous trial limits. Upgrade for production use.
 </Callout>
 
 ## Generating and Managing API Keys
 
-Access your FetchMedia dashboard at `https://dashboard.example.com` to create and manage keys.
+Access your FetchMedia dashboard at `https://app.fetchmedia.io` to create and manage keys.
 
 <Steps>
-  <Step title="Log In" icon="log-in">
-    Visit `https://dashboard.example.com` and sign in with your credentials.
+  <Step title="Log In" icon="log-in" title-type="p">
+    Visit `https://app.fetchmedia.io` and sign / sign-up in with your credentials.
   </Step>
-  <Step title="Navigate to Keys" icon="key">
+
+  <Step title="Navigate to Keys" icon="key" title-type="p">
     Click **API Keys** in the sidebar.
   </Step>
-  <Step title="Create Key" icon="plus">
-    Click **Generate New Key**. Copy the key immediately—it displays only once.
-  </Step>
-  <Step title="Set Permissions" icon="settings">
-    Assign scopes like `video:fetch` or `video:process`. Save changes.
+
+  <Step title="Generate / Copy Key" icon="plus" title-type="p">
+    Click **Generate New Key or Copy your first key**.
   </Step>
 </Steps>
 
-Manage keys by viewing usage stats, regenerating, or revoking them. Revoke compromised keys immediately.
+Manage keys by viewing or revoking them. Revoke compromised keys immediately.
 
 ## Including API Keys in Requests
 
 Add your key to the `Authorization` header as `Bearer YOUR_API_KEY`.
 
-<ParamField header="Authorization" param-type="string" required="true">
-  Bearer token for authentication. Format: `Bearer sk_YourKeyHere`.
+<ParamField header="X-API-KEY" param-type="fm_80672c4f6fd****61faa39c5f78" required="true" deprecated="false">
+  API Key for authentication. Format: `X-API-KEY fm_YourKeyHere`.
 </ParamField>
 
 Use these examples to fetch a TikTok video:
 
-<Request tabs="JavaScript,cURL,Python" show-lines="true">
+<Request show-lines="true" tabs={[]}>
   ```javascript
-  const response = await fetch('https://api.fetchmedia.io/v1/videos/tiktok?url=https://www.tiktok.com/@user/video/123', {
+  const response = await fetch('https://api.fetchmedia.io/v1/fetch', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer YOUR_API_KEY',
+      'X-API-KEY': 'YOUR_API_KEY',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({})
+    body: JSON.stringify({
+      url: 'https://www.tiktok.com/@user/video/123456789'
+    })
   });
   const data = await response.json();
-  console.log(data);
+  console.log(data.fetch_id);
   ```
 
   ```bash
-  curl -X POST https://api.fetchmedia.io/v1/videos/tiktok?url=https://www.tiktok.com/@user/video/123 \
-    -H "Authorization: Bearer YOUR_API_KEY" \
-    -H "Content-Type: application/json"
+  curl -X POST https://api.fetchmedia.io/v1/fetch \
+    -H "X-API-KEY: YOUR_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "url": "https://www.tiktok.com/@user/video/123456789"
+    }'
   ```
 
   ```python
   import requests
 
-  headers = {
-      'Authorization': 'Bearer YOUR_API_KEY',
-      'Content-Type': 'application/json'
-  }
   response = requests.post(
-      'https://api.fetchmedia.io/v1/videos/tiktok',
-      headers=headers,
-      json={'url': 'https://www.tiktok.com/@user/video/123'}
+      'https://api.fetchmedia.io/v1/fetch',
+      headers={
+          'X-API-KEY': 'YOUR_API_KEY',
+          'Content-Type': 'application/json'
+      },
+      json={
+          'url': 'https://www.tiktok.com/@user/video/123456789'
+      }
   )
-  print(response.json())
+  print(response.json()['fetch_id'])
   ```
 </Request>
 
@@ -90,21 +96,15 @@ Choose based on your setup:
   <Tab title="HTTP Clients" icon="globe">
     Use header auth in tools like Postman or Insomnia.
   </Tab>
+
   <Tab title="n8n/Make" icon="settings">
     Add `Authorization` header in HTTP nodes.
 
-    <CodeGroup tabs="n8n,Make">
+    <CodeGroup default-tab="0" show-lines="true" tabs={[]}>
       ```json
       {
         "headers": {
-          "Authorization": "Bearer YOUR_API_KEY"
-        }
-      }
-      ```
-      ```json
-      {
-        "headers": {
-          "Authorization": "Bearer YOUR_API_KEY"
+          "X-API-KEY": "YOUR_API_KEY"
         }
       }
       ```
@@ -114,53 +114,52 @@ Choose based on your setup:
 
 ## Best Practices and Security
 
-<Callout kind="alert">
+<Callout kind="alert" collapsed="false">
   Never commit API keys to Git. Use environment variables like `process.env.FETCHMEDIA_API_KEY`.
 </Callout>
 
-- Store keys in secure vaults (e.g., AWS Secrets Manager).
+- Store keys in secure vaults (e.g., Secrets Manager).
+
 - Rotate keys every 90 days.
-- Use least-privilege scopes.
+
 - Monitor usage in your dashboard.
 
 <Expandable title="Handling Expiration and Rate Limits" default-open="false">
+  Rate limits: 100 requests/minute (trial), 1000/minute (paid). Exceeding triggers `429 Too Many Requests`.
 
-API keys expire after 365 days or when revoked. Requests return `401 Unauthorized` on invalid keys.
-
-Rate limits: 100 requests/minute (trial), 1000/minute (paid). Exceeding triggers `429 Too Many Requests`.
-
-<Response tabs="401,429">
-  ```json
-  {
-    "error": {
-      "code": "invalid_token",
-      "message": "Invalid or expired API key"
+  <Response show-lines="true" tabs={[]}>
+    ```json
+    {
+      "error": {
+        "code": "invalid_token",
+        "message": "Invalid or expired API key"
+      }
     }
-  }
-  ```
+    ```
 
-  ```json
-  {
-    "error": {
-      "code": "rate_limit_exceeded",
-      "message": "Too many requests. Retry after 60 seconds",
-      "retry_after": 60
+    ```json
+    {
+      "error": {
+        "code": "rate_limit_exceeded",
+        "message": "Too many requests. Retry after 60 seconds",
+        "retry_after": 60
+      }
     }
-  }
-  ```
-</Response>
+    ```
+  </Response>
 
-Implement exponential backoff for retries.
-
+  Implement exponential backoff for retries.
 </Expandable>
 
 ## Next Steps
 
-<Columns cols={2}>
-  <Card title="Quickstart" icon="rocket" href="/quickstart">
+<Columns cols="2">
+  <Card title="Quickstart" href="/quickstart" icon="rocket" horizontal="false">
     Fetch your first video in minutes.
   </Card>
-  <Card title="Video Processing" icon="video" href="/guides/processing">
+
+  <Card title="Video Processing" href="/guides/processing" icon="video" horizontal="false">
     Edit and repurpose with FFmpeg.
   </Card>
 </Columns>
+
