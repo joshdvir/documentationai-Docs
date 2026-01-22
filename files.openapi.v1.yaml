@@ -157,7 +157,7 @@ components:
           type: string
           format: date-time
           description: The creation time of the file.
-        url:
+        download_url:
           type: string
           format: url
           description: The URL of the file.
