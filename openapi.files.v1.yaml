@@ -1,0 +1,189 @@
+openapi: 3.0.0
+info:
+  title: FetchMedia API - Files
+  description: This is the Files endpoint for the FetchMedia API.
+  version: v1
+servers:
+  - url: https://api.fetchmedia.io/v1
+    description: Production server
+paths:
+  /files:
+    get:
+      summary: List files
+      description: Retrieves a list of files.
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: A list of files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+    post:
+      summary: Create a file
+      description: Creates a new file from a file upload or a URL.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to upload.
+                  example: "file"
+                file_url:
+                  type: string
+                  format: url
+                  description: The URL of the public file to upload.
+                  example: "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
+      responses:
+        '201':
+          description: File created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /files/{id}:
+    get:
+      summary: Get a file
+      description: Retrieves a file by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the file.
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: A file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+    delete:
+      summary: Delete a file
+      description: Deletes a file by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the file.
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '204':
+          description: File deleted
+  /files/{id}/{filename}:
+    get:
+      summary: Download a file
+      description: Downloads a file.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the file.
+            example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+            description: The filename of the file.
+            example: "file.mp4"
+      responses:
+        '302':
+          description: Redirect to the file
+          headers:
+            Location:
+              schema:
+                type: string
+                format: url
+                description: Directed to an expiring URL to download the file.
+components:
+  schemas:
+    Asset:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the file.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        name:
+          type: string
+          description: The name of the file.
+          example: "file.mp4"
+        source:
+          type: string
+          description: The source of the file.
+          example: "upload"
+        status:
+          type: string
+          description: The status of the file processing.
+          example: "pending | running | success | failed"
+        created_at:
+          type: string
+          format: date-time
+          description: The creation time of the file.
+        download_url:
+          type: string
+          format: url
+          description: The URL of the file.
+          example: "https://api.fetchmedia.io/v1/files/123e4567-e89b-12d3-a456-426614174000/file.mp4"
+        error:
+          type: string
+          nullable: true
+          description: The error message if the file processing failed.
+          example: "File processing failed: unsupported format"
+        ffprobe:
+          type: object
+          description: The ffprobe of the file.
+          example:
+            width: 1920
+            height: 1080
+            duration: 120.5
+            format_name: "mov,mp4,m4a,3gp,3g2,mj2"
+        ffprobe_error:
+          type: string
+          nullable: true
+          description: The ffprobe error message if ffprobe failed.
+          example: "ffprobe failed: invalid data found when processing input"
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+security:
+  - ApiKeyAuth: []
