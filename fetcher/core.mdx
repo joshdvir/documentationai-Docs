@@ -1,0 +1,30 @@
+---
+title: Core Concepts
+description: >-
+  Fetch and download media from supported URLs, with metadata inspection and
+  webhook-based completion.
+---
+
+
+---
+
+## Core Concepts
+
+### Fetch
+
+A **fetch** represents a job that retrieves media from a given URL.\
+Each fetch tracks status, errors, and the resulting downloadable file.
+
+### Asynchronous Execution
+
+Fetching runs asynchronously:
+
+- You receive a `fetch_id` immediately
+
+- The job transitions through `pending → running → success | failed`
+
+- Completion can be tracked via polling or a webhook
+
+### Secure Downloads
+
+Fetched files are downloaded using a `302` redirect to an expiring, signed URL.

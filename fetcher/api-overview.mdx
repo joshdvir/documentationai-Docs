@@ -1,0 +1,122 @@
+---
+title: API Overview
+description: >-
+  Fetch and download media from supported URLs, with metadata inspection and
+  webhook-based completion.
+---
+
+## API Endpoints
+
+### `POST /fetch` - [Create a Fetch](/post-fetch)
+
+**What it does**\
+Starts a new fetch for a given URL.
+
+**How to use it**
+
+- Submit a public media URL
+
+- Optionally provide a webhook for completion notification
+
+- Receive a `fetch_id` to track progress
+
+**Common usage patterns**
+
+- Download videos from supported platforms
+
+- Automate content acquisition workflows
+
+---
+
+### `GET /fetch/metadata` - [Get Video Metadata (Query)](/get-fetch-metadata)
+
+**What it does**\
+Retrieves metadata for a media URL without fetching the file.
+
+**How to use it**
+
+- Preview content before fetching
+
+- Understand media properties before fetching
+
+- Validate URLs
+
+- Display video details in UIs before starting a fetch
+
+**Notes**
+
+- Requires the `url` query parameter
+
+- No file is downloaded
+
+- No fetch job is created
+
+---
+
+### `POST /fetch/metadata` - [Get Video Metadata (Body)](/post-fetch-metadata)
+
+**What it does**\
+Same functionality as the GET variant, but accepts the URL in the request body.
+
+**How to use it**
+
+- Preferable when URLs are long
+
+- Understand media properties before fetching
+
+- Useful for JSON-only API clients
+
+**Behavior**
+
+- Requires the `url` in the JSON body
+
+- No file is downloaded
+
+- No fetch job is created
+
+---
+
+### `GET /fetch/{id}` - [Get Fetch Status](/get-fetch-id)
+
+**What it does**\
+Retrieves the current state and details of a fetch job.
+
+**Returned data includes**
+
+- Original URL
+
+- Fetch status (`pending`, `running`, `success`, `failed`)
+
+- Download URL (when available)
+
+- Error message (if failed)
+
+**How to use it**
+
+- Poll fetch progress
+
+- Detect completion or failure
+
+- Retrieve the final download endpoint
+
+---
+
+### `GET /fetch/{id}/{filename}` - [Download Fetched File](/get-fetch-id-filename)
+
+**What it does**\
+Initiates download of the fetched media file.
+
+**How it works**
+
+- Returns a `302` redirect
+
+- Redirects to a short-lived, signed download URL
+
+**How to use it**
+
+- Download fetched media
+
+- Serve files to clients without proxying large payloads
+
+- Chain into further processing steps
+

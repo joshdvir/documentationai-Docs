@@ -81,6 +81,16 @@
                 "icon": "zap"
               },
               {
+                "title": "Core Concepts",
+                "path": "fetcher/core",
+                "icon": "lucide-rocket"
+              },
+              {
+                "title": "API Overview",
+                "path": "fetcher/api-overview",
+                "icon": "align-center-horizontal-icon"
+              },
+              {
                 "title": "Webhooks",
                 "path": "fetcher/webhooks",
                 "icon": "webhook"
