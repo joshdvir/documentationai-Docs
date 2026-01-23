@@ -2,3 +2,15 @@
 title: Errors
 ---
 
+The FetchMedia API uses standard HTTP response codes to indicate the success or failure of an API request. In general, codes in the `2xx` range indicate success, codes in the `4xx` range indicate a client-side error (e.g., a missing parameter), and codes in the `5xx` range indicate a server-side error.
+
+When a request fails, the API will return a JSON response containing an `error` or `errors` key with a message explaining the issue.
+
+Below is a list of common errors you might encounter.
+
+| Error Message                | Type                                         | Explanation                                                                                                              |
+| :--------------------------- | :------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| `Invalid or expired API key` | Authentication                               | The `X-API-KEY` header is missing, invalid, or the key has been revoked.                                                 |
+| `Invalid URL`                | API Validation (`/v1/assets`, `/v1/fetches`) | The URL provided in the request is not a valid URL.                                                                      |
+| `File or URL is required`    | API Validation (`/v1/assets`)                | The request to create an asset must include either a `url` or a file upload.                                             |
+| `[Validation Errors]`        | API Validation (`/v1/commands`)              | The command creation request failed due to invalid parameters. The response will contain a more detailed list of errors. |

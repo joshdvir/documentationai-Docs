@@ -111,11 +111,6 @@
                   }
                 ],
                 "icon": "bot-message-square-icon"
-              },
-              {
-                "group": "Make",
-                "pages": [],
-                "icon": "bot-message-square"
               }
             ],
             "icon": "bot"
