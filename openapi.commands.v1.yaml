@@ -184,17 +184,15 @@ components:
                 libpostproc    56.  6.100 / 56.  6.100
                 Unrecognized option 'pass'.
                 Error splitting the argument list: Option not found
-
   securitySchemes:
-    ApiKeyAuth:
+    HeaderAuth:
       type: apiKey
       in: header
       name: X-API-KEY
-    ApiKeyAuthQuery:
+    QueryAuth:
       type: apiKey
       in: query
       name: key
 security:
-  - ApiKeyAuth: []
-  - ApiKeyAuthQuery: []
-
+  - HeaderAuth: []
+  - QueryAuth: []

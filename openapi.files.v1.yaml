@@ -17,6 +17,7 @@ paths:
           schema:
             type: integer
             default: 10
+            maximum: 100
         - name: offset
           in: query
           schema:
@@ -181,14 +182,14 @@ components:
           description: The ffprobe error message if ffprobe failed.
           example: "ffprobe failed: invalid data found when processing input"
   securitySchemes:
-    ApiKeyAuth:
+    HeaderAuth:
       type: apiKey
       in: header
       name: X-API-KEY
-    ApiKeyAuthQuery:
+    QueryAuth:
       type: apiKey
       in: query
       name: key
 security:
-  - ApiKeyAuth: []
-  - ApiKeyAuthQuery: []
+  - HeaderAuth: []
+  - QueryAuth: []
