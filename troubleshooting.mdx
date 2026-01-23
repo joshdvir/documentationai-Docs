@@ -1,165 +1,19 @@
 ---
 title: Error Handling and Troubleshooting
-description: Understand common errors in FetchMedia API calls, including error codes for video fetching failures, processing issues, and how to resolve them effectively.
+description: >-
+  Understand common errors in FetchMedia API calls, including error codes for
+  video fetching failures, processing issues, and how to resolve them
+  effectively.
 ---
-
 ## HTTP Status Codes and Error Responses
 
-FetchMedia returns standard HTTP status codes along with JSON error bodies. Review the `code` and `message` fields in responses to diagnose issues.
+FetchMedia returns standard HTTP status codes along with JSON error bodies. Review the `error` field and `status code` in  response to diagnose issues.
 
-<Callout kind="info">
-  Always check the `error.code` first—it maps directly to specific resolutions.
+<Callout kind="info" collapsed="false">
+  Always check the `errors field` first - it maps directly to specific resolutions.
 </Callout>
 
 Use these examples to interpret common responses:
-
-<Response tabs="400,401,429,500">
-```json
-{
-  "error": {
-    "code": "INVALID_URL",
-    "message": "The provided URL is not supported or malformed."
-  }
-}
-```
-
-```json
-{
-  "error": {
-    "code": "UNAUTHORIZED",
-    "message": "Invalid API key. Verify your `X-API-Key` header."
-  }
-}
-```
-
-```json
-{
-  "error": {
-    "code": "RATE_LIMIT_EXCEEDED",
-    "message": "Too many requests. Retry after {retry_after} seconds."
-  }
-}
-```
-
-```json
-{
-  "error": {
-    "code": "PROCESSING_FAILED",
-    "message": "Internal server error during FFmpeg processing."
-  }
-}
-```
-</Response>
-
-## Common Video Fetch Failures by Platform
-
-Platform-specific issues arise from privacy settings, rate limits, or content restrictions. Use the steps below for each.
-
-<Tabs>
-  <Tab title="TikTok" icon="music">
-    TikTok videos fail due to private accounts or region blocks.
-
-    <Steps>
-      <Step title="Verify Public Status" icon="eye">
-        Ensure the video is public. Test the URL in an incognito browser.
-      </Step>
-      <Step title="Check Region" icon="globe">
-        Use a VPN if geo-restricted. Retry the API call.
-      </Step>
-      <Step title="Retry with Delay">
-````bash
-curl -H "X-API-Key: YOUR_API_KEY" \
-  "https://api.fetchmedia.io/v1/fetch?url=https://www.tiktok.com/@user/video/123"
-````
-      </Step>
-    </Steps>
-  </Tab>
-
-  <Tab title="Instagram Reels" icon="instagram">
-    Reels often fail from login walls.
-
-    <Steps>
-      <Step title="Direct Link" icon="link">
-        Use the direct Reel URL, not profile links.
-      </Step>
-      <Step title="Avoid Stories">
-        Stories expire quickly—fetch Reels or IGTV instead.
-      </Step>
-    </Steps>
-  </Tab>
-
-  <Tab title="YouTube" icon="youtube">
-    Age-restricted or live videos cause issues.
-
-    <Callout kind="tip">
-      Append `?bpctr=99999999` to bypass some restrictions temporarily.
-    </Callout>
-  </Tab>
-</Tabs>
-
-## Resolving FFmpeg Processing Errors
-
-FFmpeg errors occur from incompatible formats or large files. Common codes include `FORMAT_NOT_SUPPORTED` and `TIMEOUT`.
-
-<Columns cols={2}>
-  <Card title="Format Issues" icon="file-video">
-    Convert inputs to MP4/H.264 before processing.
-  </Card>
-  <Card title="Size Limits" icon="database">
-    Videos over 500MB fail—compress first.
-  </Card>
-  <Card title="Duration" icon="clock">
-    Limit to `<60s` clips to avoid timeouts.
-  </Card>
-</Columns>
-
-Follow these steps to debug:
-
-<Steps>
-  <Step title="Validate Input" icon="check-circle">
-    Test without processing: Set `process=false` in the body.
-  </Step>
-  <Step title="Check Logs">
-    Enable `debug=true` for detailed FFmpeg output.
-  </Step>
-  <Step title="Reduce Complexity">
-    Simplify params: Use basic trims instead of effects.
-  </Step>
-</Steps>
-
-Example request with error handling:
-
-<CodeGroup tabs="JavaScript,cURL">
-```javascript
-const response = await fetch('https://api.fetchmedia.io/v1/process', {
-  method: 'POST',
-  headers: {
-    'X-API-Key': 'YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    url: 'https://example.com/video.mp4',
-    debug: true
-  })
-});
-
-if (!response.ok) {
-  const error = await response.json();
-  console.error(`Error ${error.error.code}: ${error.error.message}`);
-}
-```
-
-````bash
-curl -X POST \
-  -H "X-API-Key: YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://example.com/video.mp4",
-    "debug": true
-  }' \
-  https://api.fetchmedia.io/v1/process
-````
-</CodeGroup>
 
 ## Integration Issues with n8n and Make
 
@@ -167,16 +21,18 @@ Tools like n8n and Make often hit auth or payload errors.
 
 <Expandable title="n8n Debugging" default-open="true">
   1. Set HTTP node headers: `X-API-Key: {{ $env.YOUR_API_KEY }}`
+
   2. Parse JSON responses in a Code node.
-  3. Use Wait node for rate limits.
+
+  3. Use the Wait node for rate limits.
 </Expandable>
 
-<Expandable title="Make Scenarios">
-  Use Iterator for batch processing. Handle errors with Router > HTTP module.
+<Expandable title="Make Scenarios" default-open="false">
+  Use an Iterator for batch processing. Handle errors with Router > HTTP module.
 </Expandable>
 
-<Callout kind="alert">
-  Store API keys in environment variables—never hardcode.
+<Callout kind="alert" collapsed="false">
+  Store API keys in environment variables - never hardcode.
 </Callout>
 
-For persistent issues, check [Quickstart](/quickstart) for base setup or contact support with full error payloads.
+For persistent issues, check [Quickstart](/quickstart) for base setup or [contact support](/get-support) with full error payloads.
