@@ -1,0 +1,126 @@
+---
+title: Quickstart Guide
+description: >-
+  Get started with FetchMedia in under 5 minutes by making your first API call
+  to fetch and process a video from a social media link.
+---
+
+## Overview
+
+The **FetchMedia Fetch API** allows you to programmatically fetch media from supported public URLs (for example, video platforms, social networks) and make the resulting files available for download or further processing.
+
+This API is optimized for:
+
+- Pulling remote media into FetchMedia without manual downloads
+
+- Inspecting media metadata before fetching
+
+- Asynchronous processing with webhook notifications
+
+- Secure, time-limited downloads
+
+All requests require API key authentication via the `X-API-KEY` header.
+
+<Callout kind="danger" collapsed="false">
+  Fetch media files **CANNOT** be used in FetchMedia commands; use [files](/api-introduction/files/overview) instead.
+</Callout>
+
+---
+
+## Prerequisites
+
+<Callout kind="info" collapsed="false">
+  Before starting, ensure you have:
+
+  - A FetchMedia account (free tier available)
+
+  - An HTTP client like cURL, Postman, or a programming language with HTTP support
+
+  - A social media video URL (TikTok, Instagram, etc.)
+</Callout>
+
+<Steps>
+  <Step title="Create Account" icon="user-plus" title-type="p">
+    Visit <a href="https://app.fetchmedia.io" target="_blank" rel="noopener noreferrer">https\://app.fetchmedia.io</a> and sign up with your email.
+  </Step>
+
+  <Step title="Verify Email" icon="mail" title-type="p">
+    Check your inbox and click the verification link.
+  </Step>
+
+  <Step title="Generate API Key" icon="key" title-type="p">
+    Navigate to the API Keys section in your dashboard. Click "Create New Key" and copy the generated key (format: `fm_1234567890abcdef`).
+  </Step>
+
+  <Step title="Fetch a Video" icon="download" title-type="p">
+    Use this example to fetch and process a TikTok video.
+
+    <CodeGroup show-lines="true" tabs={[]}>
+      ```javascript
+      const response = await fetch('https://api.fetchmedia.io/v1/fetch', {
+        method: 'POST',
+        headers: {
+          'X-API-KEY': 'YOUR_API_KEY',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: 'https://www.tiktok.com/@user/video/123456789'
+        })
+      });
+      const data = await response.json();
+      console.log(data.fetch_id);
+      ```
+
+      ```bash
+      curl -X POST https://api.fetchmedia.io/v1/fetch \
+        -H "X-API-KEY: YOUR_API_KEY" \
+        -H "Content-Type: application/json" \
+        -d '{
+          "url": "https://www.tiktok.com/@user/video/123456789"
+        }'
+      ```
+
+      ```python
+      import requests
+
+      response = requests.post(
+          'https://api.fetchmedia.io/v1/fetch',
+          headers={
+              'X-API-KEY': 'YOUR_API_KEY',
+              'Content-Type': 'application/json'
+          },
+          json={
+              'url': 'https://www.tiktok.com/@user/video/123456789'
+          }
+      )
+      print(response.json()['fetch_id'])
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Poll for Results and Download" icon="git-pull-request" title-type="p">
+    The initial response provides a processing ID and status URL. Poll the status endpoint until `status` is `completed`, then download from `download_url`.
+
+    ```javascript
+    // Poll example
+    const pollStatus = async (id) => {
+      const status = await fetch(`https://api.fetchmedia.io/v1/fetch/${id}`, {
+        headers: { 'X-API-KEY': 'YOUR_API_KEY' }
+      });
+      const data = await status.json();
+      if (data.status === 'success') {
+        console.log('Download:', data.download_url);
+      }
+    };
+    ```
+  </Step>
+
+  <Step title="Download Processed Video" icon="file-axis3d-icon" title-type="p">
+    Call the `download_url` and download the file to your desired location.
+  </Step>
+</Steps>
+
+<Callout kind="success" collapsed="false">
+  Congratulations! You've fetched and processed your first video. Check your dashboard at <a href="https://app.fetchmedia.io" target="_blank" rel="noopener noreferrer">[https://app.fetchmedia.io](https://app.fetchmedia.io)</a> for usage stats.
+</Callout>
+
