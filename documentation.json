@@ -72,7 +72,20 @@
             "pages": [
               {
                 "group": "n8n",
-                "pages": [],
+                "pages": [
+                  {
+                    "title": "HTTP Node",
+                    "path": "http-node"
+                  },
+                  {
+                    "title": "Polling Loop",
+                    "path": "polling-loop"
+                  },
+                  {
+                    "title": "Webhook Callback",
+                    "path": "webhook-callback"
+                  }
+                ],
                 "icon": "bot-message-square-icon"
               },
               {
