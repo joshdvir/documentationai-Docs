@@ -36,10 +36,14 @@ Manage keys by viewing or revoking them. Revoke compromised keys immediately.
 
 ## Including API Keys in Requests
 
-Add your key to the `Authorization` header as `Bearer YOUR_API_KEY`.
+Add your key to the `Authorization` header as `Bearer YOUR_API_KEY` or as a query parameter
 
 <ParamField header="X-API-KEY" param-type="fm_80672c4f6fd****61faa39c5f78" required="true" deprecated="false">
   API Key for authentication. Format: `X-API-KEY fm_YourKeyHere`.
+</ParamField>
+
+<ParamField query="key" param-type="fm_80672c4f6fd****61faa39c5f78" required="true" deprecated="false">
+  API Key for authentication. Format: `key=fm_YourKeyHere`.
 </ParamField>
 
 Use these examples to fetch a TikTok video:
@@ -100,7 +104,7 @@ Choose based on your setup:
   <Tab title="n8n/Make" icon="settings">
     Add `Authorization` header in HTTP nodes.
 
-    <CodeGroup default-tab="0" show-lines="true" tabs={[]}>
+    <CodeGroup show-lines="true" tabs={[]}>
       ```json
       {
         "headers": {
