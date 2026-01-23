@@ -189,5 +189,10 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    ApiKeyAuthQuery:
+      type: apiKey
+      in: query
+      name: key
 security:
   - ApiKeyAuth: []
+  - ApiKeyAuthQuery: []

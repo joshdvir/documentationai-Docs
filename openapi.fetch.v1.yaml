@@ -114,6 +114,7 @@ paths:
     get:
       summary: Download a fetched file
       description: Downloads a file that has been fetched.
+      security: []
       parameters:
         - name: id
           in: path
@@ -201,5 +202,10 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    ApiKeyAuthQuery:
+      type: apiKey
+      in: query
+      name: key
 security:
   - ApiKeyAuth: []
+  - ApiKeyAuthQuery: []
