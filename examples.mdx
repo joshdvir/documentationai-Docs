@@ -1,4 +1,179 @@
 ---
-title: Examples
+title: FFmpeg Examples
 ---
+This page provides a set of common FFmpeg commands and shows how to execute them using the FetchMedia API.
+
+Each example includes the `ffmpeg_command` and the full `curl` request to send to the `/v1/commands` endpoint. Remember to replace `YOUR_API_KEY` with your actual API key.
+
+The `input_files` in the examples use publicly available video files. You can replace these with your own URLs. The output files will be stored in your account's storage.
+
+---
+
+## Convert to MP4 (H.264)
+
+This example converts a video file to the MP4 format with the H.264 video codec and AAC audio codec. This is a common format for web video.
+
+```bash
+curl -X POST https://api.fetchmedia.io/v1/commands \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: YOUR_API_KEY" \
+  -d '{
+    "ffmpeg_command": "ffmpeg -i {{in_1}} -c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k {{out_1}}",
+    "input_files": {
+      "in_1": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    "output_files": {
+      "out_1": "output.mp4"
+    }
+  }'
+```
+
+---
+
+## Change Video Resolution
+
+This example resizes a video to 1280x720 pixels.
+
+```bash
+curl -X POST https://api.fetchmedia.io/v1/commands \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: YOUR_API_KEY" \
+  -d '{
+    "ffmpeg_commands": [
+      "ffmpeg -i {{in_1}} -vf scale=1280:720 {{out_1}}"
+    ],
+    "input_files": {
+      "in_1": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    "output_files": {
+      "out_1": "output_720p.mp4"
+    }
+  }'
+```
+
+---
+
+## Extract Audio from Video
+
+This example extracts the audio track from a video file and saves it as an AAC file without re-encoding.
+
+```bash
+curl -X POST https://api.fetchmedia.io/v1/commands \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: YOUR_API_KEY" \
+  -d '{
+    "ffmpeg_commands": [
+      "ffmpeg -i {{in_1}} -vn -acodec copy {{out_1}}"
+    ],
+    "input_files": {
+      "in_1": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    "output_files": {
+      "out_1": "audio.aac"
+    }
+  }'
+```
+
+---
+
+## Create a GIF from a Video
+
+This example creates a 3-second animated GIF from a video, starting at the 10-second mark.
+
+```bash
+curl -X POST https://api.fetchmedia.io/v1/commands \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: YOUR_API_KEY" \
+  -d '{
+    "ffmpeg_command": "ffmpeg -i {{in_1}} -ss 00:00:10 -to 00:00:13 -vf \"fps=10,scale=320:-1:flags=lanczos\" {{out_1}}",
+    "input_files": {
+      "in_1": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    "output_files": {
+      "out_1": "animated.gif"
+    }
+  }'
+```
+
+---
+
+## Add a Watermark to a Video
+
+This example adds a PNG image as a watermark onto a video. This command uses two input files: the video (`in_1`) and the watermark image (`in_2`).
+
+```bash
+curl -X POST https://api.fetchmedia.io/v1/commands \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: YOUR_API_KEY" \
+  -d '{
+    "ffmpeg_command": "ffmpeg -i {{in_1}} -i {{in_2}} -filter_complex \"overlay=10:10\" {{out_1}}",
+    "input_files": {
+      "in_1": "https://www.w3schools.com/html/mov_bbb.mp4",
+      "in_2": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Fetch.ai_Logo.svg/320px-Fetch.ai_Logo.svg.png"
+    },
+    "output_files": {
+      "out_1": "watermarked.mp4"
+    }
+  }'
+```
+
+---
+
+---
+
+## Multi-Pass Encoding for Higher Quality
+
+Multi-pass encoding is a technique to get better compression efficiency and quality. In the first pass, `ffmpeg` analyzes the video and writes the statistics to a log file. In the second pass, it uses these statistics to make better decisions about how to compress the video, resulting in a higher quality output for a given file size.
+
+Our API supports multi-pass encoding via the `ffmpeg_commands` array, which allows you to run multiple `ffmpeg` commands in sequence.
+
+While "3-pass" encoding is sometimes mentioned, it is not a standard feature in most `ffmpeg` codecs, and 2-pass encoding provides most of the benefits.
+
+---
+
+## 2-Pass H.264 Encoding
+
+This example performs a 2-pass encode to create a high-quality H.264 video. The first command performs the analysis, and the second command creates the final video.
+
+```bash
+curl -X POST https://api.fetchmedia.io/v1/commands \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: YOUR_API_KEY" \
+  -d '{
+    "ffmpeg_commands": [
+      "ffmpeg -y -i {{in_1}} -c:v libx264 -b:v 2M -preset medium -pass 1 -passlogfile pass1 -an -f mp4 /dev/null",
+      "ffmpeg -i {{in_1}} -c:v libx264 -b:v 2M -preset medium -pass 2 -passlogfile pass1 -c:a aac -b:a 128k {{out_1}}"
+    ],
+    "input_files": {
+      "in_1": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    "output_files": {
+      "out_1": "output_2pass.mp4"
+    }
+  }'
+```
+
+---
+
+## 2-Pass VP9 Encoding for WebM
+
+This example performs a 2-pass encode to create a WebM video with the VP9 codec, which is highly optimized for web streaming.
+
+```bash
+curl -X POST https://api.fetchmedia.io/v1/commands \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: YOUR_API_KEY" \
+  -d '{
+    "ffmpeg_commands": [
+      "ffmpeg -y -i {{in_1}} -c:v libvpx-vp9 -b:v 2M -pass 1 -an -f webm /dev/null",
+      "ffmpeg -i {{in_1}} -c:v libvpx-vp9 -b:v 2M -pass 2 -c:a libopus -b:a 128k {{out_1}}"
+    ],
+    "input_files": {
+      "in_1": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    "output_files": {
+      "out_1": "output.webm"
+    }
+  }'
+```
 
