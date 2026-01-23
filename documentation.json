@@ -25,17 +25,6 @@
                 "icon": "star"
               },
               {
-                "title": "Examples",
-                "path": "examples",
-                "icon": "activity-square"
-              }
-            ]
-          },
-          {
-            "group": "Core Concepts",
-            "icon": "layers",
-            "pages": [
-              {
                 "title": "Authentication",
                 "path": "authentication",
                 "icon": "key"
@@ -49,6 +38,11 @@
                 "title": "Quickstart",
                 "path": "ffmpeg/quickstart",
                 "icon": "activity-icon"
+              },
+              {
+                "title": "Examples",
+                "path": "examples",
+                "icon": "activity-square"
               },
               {
                 "title": "Commands",
