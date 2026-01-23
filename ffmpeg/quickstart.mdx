@@ -1,9 +1,9 @@
 ---
 title: Quickstart Guide
 description: >-
-  Get started with the FetchMedia Commands API in under 5 minutes by making your first API call to run an FFmpeg command on a video.
+  Get started with the FetchMedia Commands API in under 5 minutes by making your
+  first API call to run an FFmpeg command on a video.
 ---
-
 ## Overview
 
 The **FetchMedia Commands API** allows you to programmatically execute FFmpeg commands on media files from public URLs. This enables a wide range of media processing tasks directly through the API.
@@ -11,8 +11,11 @@ The **FetchMedia Commands API** allows you to programmatically execute FFmpeg co
 This API is optimized for:
 
 - Running FFmpeg commands without managing infrastructure
+
 - Asynchronous processing with webhook notifications
+
 - Handling complex, multi-step FFmpeg workflows
+
 - Securely storing and retrieving processed media files
 
 All requests require API key authentication via the `X-API-KEY` header.
@@ -25,13 +28,15 @@ All requests require API key authentication via the `X-API-KEY` header.
   Before starting, ensure you have:
 
   - A FetchMedia account (free tier available)
+
   - An HTTP client like cURL, Postman, or a programming language with HTTP support
+
   - A publicly accessible URL to a media file (e.g., a video, audio, or image file).
 </Callout>
 
 <Steps>
   <Step title="Create Account" icon="user-plus" title-type="p">
-    Visit <a href="https://app.fetchmedia.io" target="_blank" rel="noopener noreferrer">https://app.fetchmedia.io</a> and sign up with your email.
+    Visit [<a href="https://app.fetchmedia.io" target="_blank" rel="noopener noreferrer">https://app.fetchmedia.io</a>](https://app.fetchmedia.io) and sign up with your email.
   </Step>
 
   <Step title="Verify Email" icon="mail" title-type="p">
@@ -109,24 +114,55 @@ All requests require API key authentication via the `X-API-KEY` header.
   <Step title="Poll for Results" icon="git-pull-request" title-type="p">
     The initial response provides a `command_id`. Poll the `GET /v1/commands/{id}` endpoint until the `status` is `success`.
 
+    <CodeGroup default-tab="1" show-lines="true" tabs={["new-file.txt"]}>
+      ```javascript
+      // Poll example
+      const pollStatus = async (id) => {
+        const statusResponse = await fetch(`https://api.fetchmedia.io/v1/commands/${id}`, {
+          headers: { 'X-API-KEY': 'YOUR_API_KEY' }
+        });
+        const data = await statusResponse.json();
+        if (data.status === 'success') {
+          // Assuming 'out_1' is the key for your output file
+          console.log('Download:', data.output_files.out_1.download_url);
+          return data.output_files.out_1.download_url;
+        } else if (data.status === 'running' || data.status === 'pending') {
+          // Wait and poll again
+          setTimeout(() => pollStatus(id), 5000);
+        } else {
+          console.error('Command failed:', data.processing_errors);
+        }
+      };
+      ```
+
+      ```python new-file.txt
+      def poll_status(command_id):
+          url = f"https://api.fetchmedia.io/v1/commands/{command_id}"
+          headers = {'X-API-KEY': 'YOUR_API_KEY'}
+          
+          while True:
+              response = requests.get(url, headers=headers)
+              data = response.json()
+              
+              status = data.get('status')
+              
+              if status == 'success':
+                  # Assuming 'out_1' is the key for your output file
+                  download_url = data['output_files']['out_1']['download_url']
+                  print(f"Download: {download_url}")
+                  return download_url
+                  
+              elif status in ['running', 'pending']:
+                  # Wait 5 seconds and poll again
+                  time.sleep(5)
+                  
+              else:
+                  print(f"Command failed: {data.get('processing_errors')}")
+                  return None
+      ```
+    </CodeGroup>
+
     ```javascript
-    // Poll example
-    const pollStatus = async (id) => {
-      const statusResponse = await fetch(`https://api.fetchmedia.io/v1/commands/${id}`, {
-        headers: { 'X-API-KEY': 'YOUR_API_KEY' }
-      });
-      const data = await statusResponse.json();
-      if (data.status === 'success') {
-        // Assuming 'out_1' is the key for your output file
-        console.log('Download:', data.output_files.out_1.download_url);
-        return data.output_files.out_1.download_url;
-      } else if (data.status === 'running' || data.status === 'pending') {
-        // Wait and poll again
-        setTimeout(() => pollStatus(id), 5000);
-      } else {
-        console.error('Command failed:', data.processing_errors);
-      }
-    };
     ```
   </Step>
 
@@ -136,5 +172,6 @@ All requests require API key authentication via the `X-API-KEY` header.
 </Steps>
 
 <Callout kind="success" collapsed="false">
-  Congratulations! You've processed your first video with the Commands API. Check your dashboard at <a href="https://app.fetchmedia.io" target="_blank" rel="noopener noreferrer">https://app.fetchmedia.io</a> for usage stats.
+  Congratulations! You've processed your first video with the Commands API. Check your dashboard at [<a href="https://app.fetchmedia.io" target="_blank" rel="noopener noreferrer">https://app.fetchmedia.io</a>](https://app.fetchmedia.io) for usage stats.
 </Callout>
+
