@@ -166,35 +166,50 @@
               },
               {
                 "group": "Commands",
-                "pages": [
-                  {
-                    "title": "Overview",
-                    "path": "api-introduction/commands/overview"
-                  }
-                ],
+                "pages": [],
                 "openapi": "openapi.commands.v1.yaml"
               },
               {
                 "group": "Files",
-                "pages": [
-                  {
-                    "title": "Overview",
-                    "path": "api-introduction/files/overview"
-                  }
-                ],
+                "pages": [],
                 "openapi": "files.openapi.v1.yaml"
               },
               {
                 "group": "Fetch",
-                "pages": [
-                  {
-                    "title": "Overview",
-                    "path": "api-introduction/fetch/overview"
-                  }
-                ],
+                "pages": [],
                 "openapi": "openapi.fetch.v1.yaml"
               }
             ]
+          },
+          {
+            "group": "Commands",
+            "pages": [
+              {
+                "title": "Overview",
+                "path": "api-introduction/commands/overview"
+              }
+            ],
+            "openapi": "openapi.commands.v1.yaml"
+          },
+          {
+            "group": "Files",
+            "pages": [
+              {
+                "title": "Overview",
+                "path": "api-introduction/files/overview"
+              }
+            ],
+            "openapi": "openapi.files.v1.yaml"
+          },
+          {
+            "group": "Fetch",
+            "pages": [
+              {
+                "title": "Overview",
+                "path": "api-introduction/fetch/overview"
+              }
+            ],
+            "openapi": "openapi.fetch.v1.yaml"
           }
         ]
       }
