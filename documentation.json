@@ -25,11 +25,6 @@
                 "icon": "star"
               },
               {
-                "title": "Quickstart",
-                "path": "quickstart",
-                "icon": "zap"
-              },
-              {
                 "title": "Examples",
                 "path": "examples",
                 "icon": "activity-square"
@@ -44,9 +39,19 @@
                 "title": "Authentication",
                 "path": "authentication",
                 "icon": "key"
+              }
+            ]
+          },
+          {
+            "group": "FFmpeg",
+            "pages": [
+              {
+                "title": "Quickstart",
+                "path": "ffmpeg/quickstart",
+                "icon": "activity-icon"
               },
               {
-                "title": "FFmpeg Commands",
+                "title": "Commands",
                 "path": "commands",
                 "icon": "command"
               },
@@ -64,6 +69,21 @@
                 "title": "Webhooks",
                 "path": "webhooks",
                 "icon": "webhook-icon"
+              }
+            ]
+          },
+          {
+            "group": "Fetcher",
+            "pages": [
+              {
+                "title": "Quickstart",
+                "path": "quickstart",
+                "icon": "zap"
+              },
+              {
+                "title": "Webhooks",
+                "path": "fetcher/webhooks",
+                "icon": "webhook"
               }
             ]
           },
