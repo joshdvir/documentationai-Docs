@@ -1,6 +1,45 @@
 ---
-title: Quickstart Guide
-description: >-
-  Get started with FetchMedia in under 5 minutes by making your first API call
-  to fetch and process a video from a social media link.
+title: Webhooks
 ---
+Webhooks provide a powerful mechanism to receive real-time notifications about the status of your asynchronous **Fetches**. Instead of polling for the status of a fetch, you can provide a webhook URL, and the Fetchmedia system will send a `POST` request to that URL upon completion of the fetch.
+
+## Endpoints that Support Webhooks
+
+The primary endpoint that supports webhooks for fetching is:
+
+- `POST /v1/fetch`: When creating a fetch request, you can include a `webhook` parameter in your request body. This parameter should contain the URL where you want to receive the webhook notification.
+
+```json
+{
+  "url": "https://www.youtube.com/watch?v=93npkPcQIzA",
+  "webhook": "https://your-application.com/webhook-receiver"
+}
+```
+
+## The Webhook Request
+
+When your fetch operation has finished processing (either successfully or with an error), the system will send an HTTP `POST` request to the `webhook` URL you provided.
+
+### Request Details
+
+- **Method**: `POST`
+
+- **Content-Type**: `application/json`
+
+### Payload
+
+The payload of the webhook request is a JSON object containing the details of the **Fetch** operation.
+
+Here is an example of the JSON payload you might receive for a successful fetch:
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "url": "https://www.youtube.com/watch?v=93npkPcQIzA",
+  "status": "success",
+  "download_url": "https://api.fetchmedia.io/v1/fetch/123e4567-e89b-12d3-a456-426614174000/output.mp4",
+  "error": null
+}
+```
+
+This payload gives you immediate access to the status and download URL of the fetched file, allowing your application to proceed with follow-up processing. If the fetch fails, the `status` will be `failed` and the `error` field will contain a description of the error.
