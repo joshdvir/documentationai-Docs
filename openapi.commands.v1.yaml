@@ -17,6 +17,7 @@ paths:
           schema:
             type: integer
             default: 10
+            maximum: 100
         - name: offset
           in: query
           schema:
@@ -196,3 +197,4 @@ components:
 security:
   - ApiKeyAuth: []
   - ApiKeyAuthQuery: []
+
