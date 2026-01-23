@@ -1,6 +1,81 @@
 ---
-title: Quickstart Guide
-description: >-
-  Get started with FetchMedia in under 5 minutes by making your first API call
-  to fetch and process a video from a social media link.
+title: HTTP Node
 ---
+This guide will walk you through the process of creating a [Command](/post-commands) in FetchMedia using an n8n HTTP Request node.
+
+## Prerequisites
+
+Before you start, you'll need:
+
+- A FetchMedia API Key. You can create one in your [FetchMedia dashboard](https://app.fetchmedia.io/keys).
+
+- An n8n account. If you don't have one, you can sign up at [n8n.io](https://n8n.io).
+
+## Step 1: Create a new n8n workflow
+
+First, log in to your n8n account and create a new workflow.
+
+*(Image: Screenshot of the n8n dashboard with the "Add workflow" button highlighted.)*
+
+## Step 2: Add an HTTP Request node
+
+In your new workflow, add an HTTP Request node. You can do this by clicking the `+` button and searching for "HTTP Request".
+
+*(Image: Screenshot of the n8n workflow editor showing how to add an HTTP Request node.)*
+
+## Step 3: Configure the HTTP Request node
+
+Now, let's configure the HTTP Request node to send a request to the FetchMedia API.
+
+- **Method:** `POST`
+
+- **URL:** `https://api.fetchmedia.io/v1/commands`
+
+- **Authentication:** `Header Auth`
+
+For **Header Auth**, you'll need to add a new credential.
+
+1. Click on "Create New" next to the "Credentials" field.
+
+2. Give your credential a name, like "FetchMedia API Key".
+
+3. The "Name" of the header should be `X-API-KEY`.
+
+4. The "Value" should be your FetchMedia API key.
+
+5. Click "Save" to save your credential.
+
+*(Image: Screenshot of the credentials section in the HTTP Request node, showing the configuration for the X-API-KEY header.)*
+
+Next, you'll need to configure the request body.
+
+- **Send Body:** `true`
+
+- **Body Content Type:** `JSON`
+
+- **Body:**
+
+```json
+{
+  "ffmpeg_command": "ffmpeg -i {{in_1}} -c:v copy -c:a copy {{out_1}}",
+  "input_files": {
+    "in_1": "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
+  },
+  "output_files": {
+    "out_1": "output.mp4"
+  },
+  "webhook": "https://your-webhook-url.com/webhook"
+}
+```
+
+*(Image: Screenshot of the body section in the HTTP Request node, showing the JSON body.)*
+
+## Step 4: Test the node
+
+Once you've configured the node, you can test it by clicking the "Execute Node" button. If the request is successful, you should see a `201` status code and a JSON response containing the `command_id`.
+
+*(Image: Screenshot of the "Execute Node" button and the successful output, showing the 201 status code and the command\_id.)*
+
+## Conclusion
+
+That's it! You've successfully created a FetchMedia command using n8n. You can now connect this node to other nodes in your workflow to automate your media processing tasks. For more information on what you can do with commands, check out the [Commands documentation](/docs/commands).
