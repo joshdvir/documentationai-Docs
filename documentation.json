@@ -114,6 +114,23 @@
               }
             ],
             "icon": "bot"
+          },
+          {
+            "group": "Support",
+            "pages": [
+              {
+                "title": "Get Support",
+                "path": "get-support"
+              },
+              {
+                "title": "Troubleshooting",
+                "path": "troubleshooting"
+              },
+              {
+                "title": "Errors",
+                "path": "errors"
+              }
+            ]
           }
         ]
       },
