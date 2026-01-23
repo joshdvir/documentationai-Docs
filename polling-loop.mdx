@@ -1,7 +1,6 @@
 ---
-title: Polling Loop'
+title: Polling Loop
 ---
-
 This guide will show you how to create a polling loop in n8n to check the status of a FetchMedia command until it is complete.
 
 ## Prerequisites
@@ -9,34 +8,44 @@ This guide will show you how to create a polling loop in n8n to check the status
 Before you start, you'll need:
 
 - To have completed the ["Connecting to FetchMedia with n8n"](/docs/n8n-guide) guide.
+
 - A `command_id` from a previously created command.
 
 ## Workflow Overview
 
 We will create a workflow that does the following:
-1.  Waits for a specific amount of time.
-2.  Fetches the status of a command using its ID.
-3.  Checks if the command status is `success` or `failed`.
-4.  If the command is still `pending` or `running`, it will loop back and wait again.
-5.  If the command is finished, the loop will stop.
+
+1. Waits for a specific amount of time.
+
+2. Fetches the status of a command using its ID.
+
+3. Checks if the command status is `success` or `failed`.
+
+4. If the command is still `pending` or `running`, it will loop back and wait again.
+
+5. If the command is finished, the loop will stop.
 
 We will use the following n8n nodes:
+
 - **Wait:** To pause the workflow for a set amount of time.
+
 - **HTTP Request:** To get the command status from the FetchMedia API.
+
 - **If:** To check the status and decide whether to continue the loop or stop.
 
 ## Step 1: Start with the Command ID
 
 For this guide, we'll assume your workflow starts right after you've created a command and have the `command_id`. Your start node or the node that triggers this polling workflow should provide the `command_id`.
 
-*(Image: Screenshot of a "Start" node or another node that outputs the command_id in n8n.)*
+*(Image: Screenshot of a "Start" node or another node that outputs the command\_id in n8n.)*
 
 ## Step 2: Add a Wait node
 
 To avoid overwhelming the FetchMedia API with requests, and to give the command time to process, we'll add a "Wait" node.
 
-1.  Click the `+` button to add a new node and search for "Wait".
-2.  Configure the "Wait" node to wait for a reasonable amount of time, for example, 10 seconds.
+1. Click the `+` button to add a new node and search for "Wait".
+
+2. Configure the "Wait" node to wait for a reasonable amount of time, for example, 10 seconds.
 
 *(Image: Screenshot of a configured "Wait" node in n8n, set to wait for 10 seconds.)*
 
@@ -45,10 +54,15 @@ To avoid overwhelming the FetchMedia API with requests, and to give the command 
 Next, add an "HTTP Request" node to get the latest status of your command.
 
 - **Method:** `GET`
+
 - **URL:** `https://api.fetchmedia.io/v1/commands/{{$json["command_id"]}}`
+
   - This n8n expression dynamically inserts the `command_id` from the incoming data into the URL.
+
 - **Authentication:** `Header Auth`
+
   - Use the same "FetchMedia API Key" credential you created in the previous guide.
+
 - **Send Body:** `false`
 
 *(Image: Screenshot of the configured GET HTTP Request node for fetching the command status.)*
@@ -57,16 +71,25 @@ Next, add an "HTTP Request" node to get the latest status of your command.
 
 Now, we'll use an "If" node to check the `status` from the response of the HTTP Request node.
 
-1.  Add an "If" node after the HTTP Request node.
-2.  The "If" node creates two outputs: `true` (for matched conditions) and `false` (for non-matched conditions).
-3.  Under "Conditions", set up a rule to check if the command has finished. We'll check if the status is either `success` or `failed`.
-    - **Value 1:** `{{$json["status"]}}`
-    - **Operation:** `Equal`
-    - **Value 2:** `success`
-4.  Click "Add Condition" and select "OR".
-    - **Value 1:** `{{$json["status"]}}`
-    - **Operation:** `Equal`
-    - **Value 2:** `failed`
+1. Add an "If" node after the HTTP Request node.
+
+2. The "If" node creates two outputs: `true` (for matched conditions) and `false` (for non-matched conditions).
+
+3. Under "Conditions", set up a rule to check if the command has finished. We'll check if the status is either `success` or `failed`.
+
+   - **Value 1:** `{{$json["status"]}}`
+
+   - **Operation:** `Equal`
+
+   - **Value 2:** `success`
+
+4. Click "Add Condition" and select "OR".
+
+   - **Value 1:** `{{$json["status"]}}`
+
+   - **Operation:** `Equal`
+
+   - **Value 2:** `failed`
 
 The `true` branch will now execute if the status is `success` or `failed`. The `false` branch will execute for any other status (like `pending` or `running`).
 
