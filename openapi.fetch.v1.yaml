@@ -180,23 +180,31 @@ components:
     Metadata:
       type: object
       properties:
+        url:
+          type: string
+          format: url
+          description: The URL that was fetched.
+          example: "https://www.youtube.com/watch?v=93npkPcQIzA"
         title:
           type: string
           description: The title of the video.
           example: "Video Title"
-        description:
-          type: string
-          description: The description of the video.
-          example: "Video Description"
-        thumbnail:
-          type: string
-          format: url
-          description: The thumbnail of the video.
-          example: "https://example.com/thumbnail.jpg"
         duration:
           type: number
-          description: The duration of the video.
+          description: The duration of the video in seconds.
           example: 123.45
+        view_count:
+          type: number
+          description: The number of views of the video.
+          example: 12345
+        like_count:
+          type: number
+          description: The number of likes of the video.
+          example: 12345
+        comment_count:
+          type: number
+          description: The number of comments of the video.
+          example: 12345
   securitySchemes:
     HeaderAuth:
       type: apiKey
