@@ -102,10 +102,6 @@
                     "path": "http-node"
                   },
                   {
-                    "title": "Polling Loop",
-                    "path": "polling-loop"
-                  },
-                  {
                     "title": "Webhook Callback",
                     "path": "webhook-callback"
                   }
