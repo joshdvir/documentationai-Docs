@@ -15,13 +15,11 @@ Before you start, you'll need:
 
 First, log in to your n8n account and create a new workflow.
 
-*(Image: Screenshot of the n8n dashboard with the "Add workflow" button highlighted.)*
-
 ## Step 2: Add an HTTP Request node
 
 In your new workflow, add an HTTP Request node. You can do this by clicking the `+` button and searching for "HTTP Request".
 
-*(Image: Screenshot of the n8n workflow editor showing how to add an HTTP Request node.)*
+<Image src="https://blob-cdn.documentation.ai/org-68dc22cd-a167-4162-81f0-16e2144bfa06/doc-c248c04a-1253-425c-abf9-a0ed9859753c/1769440373855-y1rbwn0hes-pasted-image-1769440370109.png?q=85&fm=auto&auto=compress%2Cformat" width="4034" height="2268" alt="" />
 
 ## Step 3: Configure the HTTP Request node
 
@@ -29,7 +27,7 @@ Now, let's configure the HTTP Request node to send a request to the FetchMedia A
 
 - **Method:** `POST`
 
-- **URL:** `https://api.fetchmedia.io/v1/commands`
+- **URL:** `https://api.fetchmedia.io/v1/fetch`
 
 - **Authentication:** `Header Auth`
 
@@ -43,9 +41,7 @@ For **Header Auth**, you'll need to add a new credential.
 
 4. The "Value" should be your FetchMedia API key.
 
-5. Click "Save" to save your credential.
-
-*(Image: Screenshot of the credentials section in the HTTP Request node, showing the configuration for the X-API-KEY header.)*
+5. Click "Save" to save your credentials.
 
 Next, you'll need to configure the request body.
 
@@ -57,24 +53,17 @@ Next, you'll need to configure the request body.
 
 ```json
 {
-  "ffmpeg_command": "ffmpeg -i {{in_1}} -c:v copy -c:a copy {{out_1}}",
-  "input_files": {
-    "in_1": "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
-  },
-  "output_files": {
-    "out_1": "output.mp4"
-  },
-  "webhook": "https://your-webhook-url.com/webhook"
+  "url": "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
 }
 ```
 
-*(Image: Screenshot of the body section in the HTTP Request node, showing the JSON body.)*
+<Image src="https://blob-cdn.documentation.ai/org-68dc22cd-a167-4162-81f0-16e2144bfa06/doc-c248c04a-1253-425c-abf9-a0ed9859753c/1769440447270-tiocxlyzoxa-pasted-image-1769440444604.png?q=85&fm=auto&auto=compress%2Cformat" width="4024" height="2246" alt="" />
+
+
 
 ## Step 4: Test the node
 
 Once you've configured the node, you can test it by clicking the "Execute Node" button. If the request is successful, you should see a `201` status code and a JSON response containing the `command_id`.
-
-*(Image: Screenshot of the "Execute Node" button and the successful output, showing the 201 status code and the command\_id.)*
 
 ## Conclusion
 
