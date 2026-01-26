@@ -1,117 +1,106 @@
 ---
-title: Webhook Callback
+title: Using Webhook Callbacks for Commands in n8n
 ---
-
 This guide demonstrates how to use webhooks to get real-time status updates for your FetchMedia commands in n8n. Using webhooks is more efficient than polling, as FetchMedia will notify you instantly when a command is complete.
 
 We will create two separate workflows:
-1.  **Webhook Handler:** A workflow that listens for incoming webhook calls from FetchMedia.
-2.  **Command Creator:** A workflow that sends the request to create a command, telling FetchMedia where to send the webhook.
+
+1. **Webhook Handler:** A workflow that listens for incoming webhook calls from FetchMedia.
+
+2. **Command Creator:** A workflow that sends the request to create a command, telling FetchMedia where to send the webhook.
 
 ## Prerequisites
 
 - An n8n account.
+
 - A FetchMedia API Key.
+
 - A publicly accessible n8n instance. If you are using n8n's cloud version, your webhook URLs are already public. If you are self-hosting, you may need a tool like [ngrok](https://ngrok.com/) to expose your local n8n instance to the internet during testing.
 
 ---
 
-## Part 1: The Webhook Handler Workflow
+## Part 1: The Waiting Stage
 
-This workflow receives and processes the data sent by FetchMedia.
+The workflow adds a "wait" step to your n8n process, pausing execution until a specific webhook from FetchMedia is received.
 
-### Step 1: Create a Workflow with a Webhook Node
+### Step 1: Create a Workflow with a Wait Node
 
-1.  Create a new, empty workflow in n8n.
-2.  Add a **Webhook** node. This will be the trigger for your workflow.
-3.  The Webhook node provides a **Test URL** and a **Production URL**. The URL is the endpoint that will listen for the callback. Copy the **Production URL** and save it for later.
+1. Create a new, empty workflow in n8n.
 
-*(Image: Screenshot of the n8n Webhook node, highlighting the Production URL.)*
+2. Add a **Wait** node. This node will pause your workflow until it receives a specific signal.
 
-### Step 2: Listen for a Test Event
+3. Configure the **Wait** node:
 
-To properly configure the workflow, n8n needs to know the structure of the data it will receive. We can simulate this by sending a sample payload.
+   - **Mode:** `On Webhook Call`
 
-1.  Click the **"Listen for test event"** button in the Webhook node. Your n8n instance is now waiting for a request to come in on the Test URL.
-2.  Open a terminal and use `curl` to send a sample payload to the **Test URL**.
+   - The webhook URL will be generated at run time. It can be referenced with the `$execution.resumeUrl` variable. Send it somewhere before getting to the Wait node. <a href="https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.wait/?utm_source=n8n_app&utm_medium=node_settings_modal-credential_link&utm_campaign=n8n-nodes-base.wait" target="_blank" rel="noopener noreferrer">**More info**</a>
 
-```bash
-curl -X POST -H "Content-Type: application/json" \
--d 
-{
-  "id": "123e4567-e89b-12d3-a456-426614174000",
-  "status": "success",
-  "output_files": { "out_1": "output.mp4" },
-  "total_processing_seconds": 12.34
-}
- \
-[YOUR_WEBHOOK_TEST_URL]
-```
-Once you send this, the Webhook node in n8n should show that it has received the data.
+<Image src="https://blob-cdn.documentation.ai/org-68dc22cd-a167-4162-81f0-16e2144bfa06/doc-c248c04a-1253-425c-abf9-a0ed9859753c/1769444831490-ur606wa1y1-pasted-image-1769444830115.png?q=85&fm=auto&auto=compress%2Cformat" width="1450" height="1640" alt="" />
 
-*(Image: Screenshot showing the Webhook node in n8n after successfully receiving a test event.)*
+### Step 2: Check the Status with an "If" node
 
-### Step 3: Check the Status with an "If" node
+Now we can use the webhook data to direct our workflow after the wait.
 
-Now we can use the data from the webhook to direct our workflow.
+1. Add an **If** node and connect it to the Wait node's output.
 
-1.  Add an **If** node and connect it to the Webhook node.
-2.  Configure the "If" node to check if the command was successful.
-    - **Value 1:** `{{$json.body.status}}`
-    - **Operation:** `Equal`
-    - **Value 2:** `success`
+2. Configure the "If" node to check if the command was successful.
+
+   - **Value 1:** `{{$json.body.status}}`
+
+   - **Operation:** `Equal`
+
+   - **Value 2:** `success`
 
 The `true` branch will now execute only if the status is `success`. All other statuses will go to the `false` branch.
 
-*(Image: Screenshot of the configured "If" node, checking for the "success" status from the webhook body.)*
+<Image src="https://blob-cdn.documentation.ai/org-68dc22cd-a167-4162-81f0-16e2144bfa06/doc-c248c04a-1253-425c-abf9-a0ed9859753c/1769444772616-gjqeo8wzvq6-pasted-image-1769444770908.png?q=85&fm=auto&auto=compress%2Cformat" width="1392" height="818" alt="" />
 
-### Step 4: Handle the Result and Activate
+### Step 3: Handle the Result and Activate
 
 You can now add further actions based on the result.
+
 - From the `true` output, you could save the results to a database or send a "success" notification.
+
 - From the `false` output, you could add another "If" node to check if the status is `failed` and then send an error alert.
-
-Finally, **Save** and **Activate** the workflow using the toggle at the top of the screen. Your webhook is now live and ready to receive real requests from FetchMedia.
-
-*(Image: Screenshot of the activated workflow with nodes for handling success and failure paths.)*
-
----
 
 ## Part 2: The Command Creator Workflow
 
-This simple workflow will trigger the whole process.
-
-### Step 1: Create a New Workflow
-
-Create a second workflow. This one can be triggered manually or by any other n8n trigger. For this example, we will use the default "Start" node to trigger it manually.
-
 ### Step 2: Configure the HTTP Request Node
 
-1.  Add an **HTTP Request** node.
-2.  Configure it to create a command:
-    - **Method:** `POST`
-    - **URL:** `https://api.fetchmedia.io/v1/commands`
-    - **Authentication:** `Header Auth` (use your FetchMedia API Key credential).
-    - **Body Content Type:** `JSON`
-    - **Body:**
-      ```json
-      {
-        "ffmpeg_command": "ffmpeg -i {{in_1}} -c:v copy -c:a copy {{out_1}}",
-        "input_files": {
-          "in_1": "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
-        },
-        "output_files": {
-          "out_1": "output.mp4"
-        },
-        "webhook": "[YOUR_WEBHOOK_PRODUCTION_URL]"
-      }
-      ```
-      Replace `[YOUR_WEBHOOK_PRODUCTION_URL]` with the **Production URL** you copied from your Webhook Handler workflow in Part 1.
+1. Add an **HTTP Request** node.
 
-*(Image: Screenshot of the HTTP Request node configuration, highlighting the `webhook` field in the JSON body pointing to the production URL.)*
+2. Configure it to create a command:
+
+   - **Method:** `POST`
+
+   - **URL:** `https://api.fetchmedia.io/v1/commands`
+
+   - **Authentication:** `Header Auth` (Use your FetchMedia API Key credentials).
+
+   - **Body Content Type:** `JSON`
+
+   - **Body:**
+
+     ```json
+     {
+       "ffmpeg_command": "ffmpeg -i {{in_1}} -c:v copy -c:a copy {{out_1}}",
+       "input_files": {
+         "in_1": "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
+       },
+       "output_files": {
+         "out_1": "output.mp4"
+       },
+       "webhook": "{{ $execution.resumeUrl }}" # From the Wait node
+     }
+     ```
+
+     Keep in mind the `$execution.resumeUrl `you copied from your **Wait** node in Part 1.
+
+<Image src="https://blob-cdn.documentation.ai/org-68dc22cd-a167-4162-81f0-16e2144bfa06/doc-c248c04a-1253-425c-abf9-a0ed9859753c/1769445255304-cg0z0pken7-pasted-image-1769445253664.png?q=85&fm=auto&auto=compress%2Cformat" width="1450" height="2234" alt="" />
 
 ### Step 3: Run the Workflow
 
-Execute this workflow manually. It will send a request to FetchMedia to create a new command. Once that command finishes processing, FetchMedia will automatically send a notification to your webhook URL, which will trigger your first workflow to run.
+Execute this workflow manually. It will send a request to FetchMedia to create a new command. Once that command finishes processing, FetchMedia will automatically send a notification to your webhook URL, which will trigger the Wait node from part 1 and will contiune the workflow.
 
 You have now successfully set up a webhook-driven process to manage your FetchMedia commands!
+
