@@ -104,6 +104,10 @@
                   {
                     "title": "Webhook Callback",
                     "path": "webhook-callback"
+                  },
+                  {
+                    "title": "Download Viral Social Media Videos Directly From Telegram Using FetchMedia",
+                    "path": "download-viral-social-media-videos-directly-from-telegram-using-fetchmedia"
                   }
                 ],
                 "icon": "bot-message-square-icon"
