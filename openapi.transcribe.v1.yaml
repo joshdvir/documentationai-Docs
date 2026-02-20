@@ -1,0 +1,178 @@
+openapi: 3.0.0
+info:
+  title: FetchMedia API - Transcribe
+  description: This is the Transcribe endpoint for the FetchMedia API.
+  version: v1
+servers:
+  - url: https://api.fetchmedia.io/v1
+    description: Production server
+paths:
+  /transcribe:
+    get:
+      summary: List transcriptions
+      description: Retrieves a list of transcriptions.
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: A list of transcriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transcription'
+    post:
+      summary: Create a transcription
+      description: Creates a new transcription from an audio or video file.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to transcribe. Mutually exclusive with file_url.
+                file_url:
+                  type: string
+                  format: url
+                  description: The URL of the file to transcribe. Mutually exclusive with file.
+                  example: "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
+                webhook:
+                  type: string
+                  format: url
+                  description: The webhook to send the payload once the transcription is completed.
+                  example: "https://example.com/webhook"
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_url:
+                  type: string
+                  format: url
+                  description: The URL of the file to transcribe. Mutually exclusive with file.
+                  example: "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
+                webhook:
+                  type: string
+                  format: url
+                  description: The webhook to send the payload once the transcription is completed.
+                  example: "https://example.com/webhook"
+      responses:
+        '201':
+          description: Transcription created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transcribe_id:
+                    type: string
+                    format: uuid
+                    description: The ID of the transcription.
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+  /transcribe/{id}:
+    get:
+      summary: Get a transcription
+      description: Retrieves a transcription by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the transcription to retrieve.
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: A transcription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transcription'
+    delete:
+      summary: Delete a transcription
+      description: Deletes a transcription by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the transcription to delete.
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '204':
+          description: Transcription deleted
+components:
+  schemas:
+    Transcription:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the transcription.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        status:
+          type: string
+          description: The status of the transcription.
+          example: "pending | running | success | failed"
+        total_processing_seconds:
+          type: number
+          nullable: true
+          description: The total processing time in seconds.
+          example: 12.34
+        created_at:
+          type: string
+          format: date-time
+          description: The creation time of the transcription.
+          example: "2022-01-01T00:00:00Z"
+        srt:
+          type: string
+          format: url
+          nullable: true
+          description: The URL to download the SRT file of the transcription.
+          example: "https://api.fetchmedia.io/v1/files/123e4567-e89b-12d3-a456-426614174000/output.srt"
+        transcript:
+          type: string
+          nullable: true
+          description: The full text of the transcription.
+          example: "This is the transcribed text of the audio."
+  securitySchemes:
+    HeaderAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+    QueryAuth:
+      type: apiKey
+      in: query
+      name: key
+security:
+  - HeaderAuth: []
+  - QueryAuth: []

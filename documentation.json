@@ -180,7 +180,7 @@
           {
             "group": "Transcribe",
             "pages": [],
-            "openapi": "api-reference/fetchmedia-api-transcribe.yaml"
+            "openapi": "openapi.transcribe.v1.yaml"
           }
         ]
       }
