@@ -176,6 +176,11 @@
               }
             ],
             "openapi": "openapi.fetch.v1.yaml"
+          },
+          {
+            "group": "Transcribe",
+            "pages": [],
+            "openapi": "api-reference/openapi.transcribe.v1.yaml"
           }
         ]
       }
