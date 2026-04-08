@@ -1,0 +1,33 @@
+---
+title: Transcribe Overview
+---
+The Transcription endpoint allows you to convert audio and video files into text and SRT subtitles. It uses advanced AI models like Whisper to provide high-quality transcriptions for your media content.
+
+## The Transcription
+
+A `Transcription` represents the process of converting speech to text. It includes the status of the transcription, the time taken to process the file, and once completed, the full transcript text and a download link for the SRT subtitle file.
+
+## AI-Powered Transcriptions
+
+FetchMedia leverages state-of-the-art AI technology to ensure that your transcriptions are both fast and accurate. The endpoint supports a wide range of audio and video formats, making it versatile for various media workflows.
+
+- **Full Text Transcript:** Once a transcription is successful, the complete transcribed text is available directly in the response payload.
+- **SRT Subtitles:** An SRT file is also generated, which can be used to add subtitles to video players or for further editing.
+
+## How it Works
+
+When you submit a file for transcription, FetchMedia processes the audio to extract speech and then passes it through our AI models. The process is fully automated and optimized for high-volume workloads.
+
+## Input and Output Files
+
+You can provide the input file via a direct file upload or a `file_url`. 
+
+Once the transcription process is complete:
+- The `transcript` field in the transcription object will contain the full text.
+- The `srt` field will provide a URL to download the SRT subtitle file.
+
+The generated SRT file is also stored as a [**File**](/api-introduction/files/overview) in your organization's library.
+
+## Webhooks
+
+Transcription is an asynchronous process. We recommend providing a `webhook` URL in your request. FetchMedia will send a POST request to this URL with the full transcription data as soon as the process is complete or if it encounters an error.

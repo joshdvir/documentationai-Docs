@@ -179,12 +179,22 @@
           },
           {
             "group": "Transcribe",
-            "pages": [],
+            "pages": [
+              {
+                "title": "Overview",
+                "path": "api-introduction/transcribe/overview"
+              }
+            ],
             "openapi": "openapi.transcribe.v1.yaml"
           },
           {
             "group": "Normalize",
-            "pages": [],
+            "pages": [
+              {
+                "title": "Overview",
+                "path": "api-introduction/normalize/overview"
+              }
+            ],
             "icon": "audio-lines",
             "openapi": "api-reference/openapi.normalize.v1.yaml"
           }

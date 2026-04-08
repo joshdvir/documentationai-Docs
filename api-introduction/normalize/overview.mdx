@@ -1,0 +1,33 @@
+---
+title: Normalize Overview
+---
+The Normalization endpoint provides a specialized way to normalize audio and video files according to the EBU R128 standard. It uses the powerful `loudnorm` filter to ensure consistent loudness levels across your media files.
+
+## The Normalization
+
+A `Normalization` represents an audio leveling process. It includes the status of the job, the parameters used for normalization, and a download link for the processed file once completed.
+
+## Simplified Audio Leveling
+
+Unlike the general [**Commands**](/api-introduction/commands/overview) endpoint where you write raw `ffmpeg` syntax, the Normalization endpoint simplifies the process by exposing specific loudness parameters:
+
+- **Integrated Loudness (`loudnorm_i`):** Sets the target integrated loudness in LUFS. The default is typically -24.0 (standard for television).
+- **Loudness Range (`loudnorm_lra`):** Sets the target loudness range in LU.
+- **True Peak (`loudnorm_tp`):** Sets the target maximum true peak in dBTP.
+
+## How it Works
+
+When you submit a file for normalization, FetchMedia performs a dual-pass analysis:
+
+1.  **Analysis Pass:** The audio is analyzed to calculate its current loudness characteristics.
+2.  **Normalization Pass:** The `loudnorm` filter is applied using the analysis data to achieve the target levels with high precision and minimal dynamic compression.
+
+## Input and Output Files
+
+You can provide the input file via a direct file upload or a `file_url`. 
+
+Once the normalization process is successful, a `download_url` is provided in the normalization object. This URL allows you to directly download the leveled audio/video file. The processed file is also stored as a [**File**](/api-introduction/files/overview) in your organization's library.
+
+## Webhooks
+
+Since normalization is an asynchronous process, we recommend providing a `webhook` URL. FetchMedia will send a POST request to this URL as soon as the normalization is completed or if it fails, allowing your system to react immediately.
