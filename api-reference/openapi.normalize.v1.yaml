@@ -1,0 +1,197 @@
+openapi: 3.0.0
+info:
+  title: FetchMedia API - Normalize
+  description: This is the Normalize endpoint for the FetchMedia API.
+  version: v1
+servers:
+  - url: https://api.fetchmedia.io/v1
+    description: Production server
+paths:
+  /normalize:
+    get:
+      summary: List normalizations
+      description: Retrieves a list of normalizations.
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: A list of normalizations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Normalization'
+    post:
+      summary: Create a normalization
+      description: Creates a new normalization from an audio or video file.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to normalize. Mutually exclusive with file_url.
+                file_url:
+                  type: string
+                  format: url
+                  description: The URL of the file to normalize. Mutually exclusive with file.
+                  example: "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
+                loudnorm_i:
+                  type: number
+                  description: Integrated loudness. Must be between -70.0 and -5.0.
+                  example: -24.0
+                loudnorm_lra:
+                  type: number
+                  description: Loudness range. Must be between 1.0 and 50.0.
+                  example: 7.0
+                loudnorm_tp:
+                  type: number
+                  description: True peak. Must be between -9.0 and -0.0.
+                  example: -2.0
+                webhook:
+                  type: string
+                  format: url
+                  description: The webhook to send the payload once the normalization is completed.
+                  example: "https://example.com/webhook"
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_url:
+                  type: string
+                  format: url
+                  description: The URL of the file to normalize. Mutually exclusive with file.
+                  example: "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4"
+                loudnorm_i:
+                  type: number
+                  description: Integrated loudness. Must be between -70.0 and -5.0.
+                  example: -24.0
+                loudnorm_lra:
+                  type: number
+                  description: Loudness range. Must be between 1.0 and 50.0.
+                  example: 7.0
+                loudnorm_tp:
+                  type: number
+                  description: True peak. Must be between -9.0 and -0.0.
+                  example: -2.0
+                webhook:
+                  type: string
+                  format: url
+                  description: The webhook to send the payload once the normalization is completed.
+                  example: "https://example.com/webhook"
+      responses:
+        '201':
+          description: Normalization created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  normalization_id:
+                    type: string
+                    format: uuid
+                    description: The ID of the normalization.
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+  /normalize/{id}:
+    get:
+      summary: Get a normalization
+      description: Retrieves a normalization by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the normalization to retrieve.
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: A normalization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Normalization'
+    delete:
+      summary: Delete a normalization
+      description: Deletes a normalization by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the normalization to delete.
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '204':
+          description: Normalization deleted
+components:
+  schemas:
+    Normalization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the normalization.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        status:
+          type: string
+          description: The status of the normalization.
+          example: "pending | running | success | failed"
+        total_processing_seconds:
+          type: number
+          nullable: true
+          description: The total processing time in seconds.
+          example: 12.34
+        created_at:
+          type: string
+          format: date-time
+          description: The creation time of the normalization.
+          example: "2022-01-01T00:00:00Z"
+        download_url:
+          type: string
+          format: url
+          nullable: true
+          description: The URL to download the normalized file.
+          example: "https://api.fetchmedia.io/v1/files/123e4567-e89b-12d3-a456-426614174000/output.mp4"
+  securitySchemes:
+    HeaderAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+    QueryAuth:
+      type: apiKey
+      in: query
+      name: key
+security:
+  - HeaderAuth: []
+  - QueryAuth: []
