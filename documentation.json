@@ -181,6 +181,12 @@
             "group": "Transcribe",
             "pages": [],
             "openapi": "openapi.transcribe.v1.yaml"
+          },
+          {
+            "group": "Normalize",
+            "pages": [],
+            "icon": "audio-lines",
+            "openapi": "api-reference/openapi.normalize.v1.yaml"
           }
         ]
       }
