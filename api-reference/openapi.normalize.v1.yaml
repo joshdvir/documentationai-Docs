@@ -96,7 +96,7 @@ paths:
                   example: "https://example.com/webhook"
       responses:
         '201':
-          description: Normalization created1
+          description: Normalization created
           content:
             application/json:
               schema:
