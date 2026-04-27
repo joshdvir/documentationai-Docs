@@ -27,12 +27,15 @@ In the following `POST /v1/commands` `payload` example:
 
 - `"in_3"`: Represents an existing input file within Fetchmedia, identified by its `fm_id`. This allows you to reuse previously uploaded or processed files directly. The format for referencing an existing file is `fm_id://<uuid>`.
 
+- `"in_4"`: Represents an existing input file within Fetchmedia, identified by the `download_url`. This allows you to reuse previously uploaded or processed files directly.
+
 ```json
 {
   "input_files": {
     "in_1": "https://www.youtube.com/watch?v=YQRLHhrDhCg",
     "in_2": "https://www3.cde.ca.gov/download/rod/big_buck_bunny.mp4",
-    "in_3": "fm_id://c90798bd-b737-44ef-b341-ecd3c0afbe0f"
+    "in_3": "fm_id://c90798bd-b737-44ef-b341-ecd3c0afbe0f",
+    "in_4": "https://api.fetchmedia.io/v1/files/123e4567-e89b-12d3-a456-426614174000/file.mp4",
   },
   "output_files": {
     "out_1": "output.mp4"
